@@ -1,0 +1,16 @@
+# wisp
+crate/wisp/rustfmt.toml
+crate/wisp/taplo.toml
+
+#! VSCode
+/.vscode/
+*.code-workspace
+
+#! rsw
+/.rsw/
+/crate/wisp/target/
+/crate/wisp/pkg/
+
+#! vite
+/node_modules/
+/dist/
