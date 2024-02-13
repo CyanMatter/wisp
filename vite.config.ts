@@ -2,8 +2,9 @@ import { defineConfig } from 'vite';
 import { ViteRsw } from 'vite-plugin-rsw';
 
 export default defineConfig({
+  root: 'web',
   build: {
-    minify: false
+    minify: 'terser',
   },
   plugins: [
     ViteRsw(),

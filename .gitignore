@@ -13,4 +13,4 @@ crate/wisp/taplo.toml
 
 #! vite
 /node_modules/
-/dist/
+/web/dist/
