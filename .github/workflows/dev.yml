@@ -30,7 +30,7 @@ jobs:
 
       # ————————————————————————————————————————————————————————————————————————
 
-      - name: Cache Rust, Cargo installations
+      - name: Set up Rust cache
         uses: actions/cache@v3
         with:
           path: |
@@ -39,10 +39,25 @@ jobs:
             ~/.rustup/settings.toml
           key: toolchain-${{ hashFiles('rust-toolchain') }}
 
-      - name: Setup Rust toolchain
+      - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
           toolchain: stable
+
+      # ————————————————————————————————————————————————————————————————————————
+
+      - name: Set up Cargo cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/            
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
 
       - name: Install Wasm-pack
         uses: jetli/wasm-pack-action@v0.4.0
@@ -64,7 +79,7 @@ jobs:
 
       # ————————————————————————————————————————————————————————————————————————
 
-      - name: Setup PNPM 7
+      - name: Set up PNPM 7
         uses: pnpm/action-setup@v2.2.2
         with:
           version: 7.9.0
@@ -75,7 +90,7 @@ jobs:
         run: |
           echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
 
-      - name: Setup PNPM cache
+      - name: Set up PNPM cache
         uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
@@ -83,10 +98,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      # ————————————————————————————————————————————————————————————————————————
-
       - name: Install Node dependencies
         run: pnpm install --prod --no-frozen-lockfile
+
+      # ————————————————————————————————————————————————————————————————————————
 
       - name: Build app
         run: pnpm build
