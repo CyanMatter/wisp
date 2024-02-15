@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
-  "devDependencies": {
-    "concurrently": "^8.2.2",
+  "dependencies": {
     "vite": "^2.9.17",
     "vite-plugin-rsw": "^2.0.11",
     "wisp": "link:D:/Documents/Programming-Projects/Rust/wisp-rust/crate/wisp/pkg"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   },
   "scripts": {
     "wasm": "wasm-pack build ./crate/wisp --target web",
