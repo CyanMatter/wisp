@@ -9,5 +9,5 @@ export default defineConfig({
   plugins: [
     ViteRsw(),
   ],
-  base: "/web/dist/"
+  base: "/wisp/"
 });
