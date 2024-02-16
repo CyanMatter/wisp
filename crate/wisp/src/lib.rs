@@ -9,19 +9,6 @@ use web_sys::{
     HtmlTextAreaElement
 };
 
-// #[wasm_bindgen]
-// extern "C" {
-//     fn alert(s: &str);
-
-//     #[wasm_bindgen(js_namespace = console)]
-//     fn log(value: &str);
-// }
-
-// #[wasm_bindgen]
-// pub fn greet(name: &str) {
-//     log(&format!("Hello, {}!", name));
-// }
-
 #[wasm_bindgen]
 pub fn boot() {
     utils::set_panic_hook();
@@ -29,12 +16,6 @@ pub fn boot() {
     let doc = get_element::document!();
     
     add_event_listeners(&doc);
-
-    // let optional_text_area = get_element::by_id::<HtmlTextAreaElement>(&doc, "text-area");
-    // let optional_message = get_element::by_id::<HtmlParagraphElement>(&doc, "msg-content");
-    // if let (Some(text_area), Some(message)) = (optional_text_area, optional_message) {
-    //     events::on_input_show_content(text_area, message);
-    // }
 }
 
 fn add_event_listeners(doc: &Document) {
