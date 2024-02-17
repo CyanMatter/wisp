@@ -4,7 +4,7 @@ import { ViteRsw } from 'vite-plugin-rsw';
 export default defineConfig({
   root: 'web',
   build: {
-    minify: 'terser',
+    minify: 'esbuild',
   },
   plugins: [
     ViteRsw(),
