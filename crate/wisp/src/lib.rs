@@ -23,6 +23,6 @@ fn add_on_input_show_content(doc: &Document) {
   let optional_target = get_element::by_id::<HtmlParagraphElement>(doc, "target");
 
   if let (Some(receptacle), Some(target)) = (optional_receptacle, optional_target) {
-    events::on_input_show_content(receptacle);
+    events::on_input_show_content(receptacle, target);
   };
 }
