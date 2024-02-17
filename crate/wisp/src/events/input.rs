@@ -1,47 +1,55 @@
-use crate::utils::log;
+use crate::utils::console_log;
+use futures::stream::{AbortHandle, Abortable};
 use gloo_events::EventListener;
+use std::time::Duration;
 use wasm_bindgen::prelude::*;
-use web_sys::{
-  HtmlParagraphElement,
-  HtmlTextAreaElement,
-  InputEvent,
-};
-
-macro_rules! do_stuff {
-  ($receptacle:expr, $target:expr) => {
-    $target.set_text_content(Some(&format!("len: {len}\ncontent: {content}",
-      len = $receptacle.text_length().to_string(),
-      content = $receptacle.value())));
-  };
-}
+use wasm_bindgen_futures::spawn_local;
+use web_sys::{EventTarget, HtmlParagraphElement, HtmlTextAreaElement, InputEvent};
 
 #[wasm_bindgen]
-pub fn on_input_show_content(receptacle: HtmlTextAreaElement, target: HtmlParagraphElement) {
-
-  let on_input = EventListener::new(&receptacle.clone(), "input", move |event| {
-
-    let input_event = event.clone()
-      .dyn_into::<InputEvent>()
-      .unwrap();
+pub fn on_input_show_content(receptacle: HtmlTextAreaElement) {
+  let listener = EventListener::new(&receptacle, "input", move |event| {
+    let event = event.dyn_ref::<InputEvent>().unwrap_throw();
 
     // Idle if input is not yet completed
-    if input_event.is_composing() {
+    if event.is_composing() {
       return;
     }
 
-    // do_stuff!(receptacle, target);
-    hard_task(&receptacle.clone(), &target.clone())
-  });
+    let (abort_handle, abort_registration) = AbortHandle::new_pair();
 
-  on_input.forget();
+    // Add a listener that aborts the task next time the content of the receptacle changes
+    EventListener::once(&event.target().unwrap(), "input", move |_event| {
+      abort_handle.abort();
+    })
+    .forget();
+
+    // Create a future that performs a hard task and can be aborted
+    spawn_local(async {
+      let fut = Abortable::new(
+        answer_to_life_the_universe_and_everything(),
+        abort_registration,
+      );
+      let optional_result = fut.await.unwrap_or_else(|aborted| {
+        console_log!("{aborted}");
+        None
+      });
+
+      if let Some(result) = optional_result {
+        console_log!("{result}");
+      }
+    });
+  });
+  listener.forget();
 }
 
-fn hard_task(receptacle: &HtmlTextAreaElement, target: &HtmlParagraphElement) {
-  log(&String::from("Check"));
-
-  let s1 = "Executing hard task...";
-  target.set_text_content(Some(s1));
-
-  let s2 = format!("Executed hard task\nContent: {}", receptacle.value());
-  target.set_text_content(Some(&s2));
+async fn answer_to_life_the_universe_and_everything() -> Option<i32> {
+  console_log!("====== counting to 10 =======");
+  for i in 0..10 {
+    console_log!("before sleep i is {}", i);
+    let delay = 1000;
+    async_std::task::sleep(Duration::from_millis(delay as u64)).await;
+  }
+  console_log!("========= all done! =========");
+  Some(42)
 }
