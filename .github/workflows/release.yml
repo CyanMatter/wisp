@@ -65,7 +65,7 @@ jobs:
       - name: Install Rust dependencies
         uses: actions-rs/cargo@v1
         with:
-          command: install
+          command: install --path crate/wisp/
 
       # ————————————————————————————————————————————————————————————————————————
 
