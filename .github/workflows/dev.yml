@@ -53,12 +53,25 @@ jobs:
 
       # ————————————————————————————————————————————————————————————————————————
 
+      - name: Check rsw installation
+        id: rsw_exists
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "^/home/runner/.cargo/bin/rsw.*$"
+
+      - name: Install Rsw
+        if: steps.rsw_exists.outputs.files_exists == 'false'
+        run: cargo install rsw
+
+      # ————————————————————————————————————————————————————————————————————————
+
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
 
+      # ————————————————————————————————————————————————————————————————————————
 
       - name: Install Wasm-pack
         uses: jetli/wasm-pack-action@v0.4.0
