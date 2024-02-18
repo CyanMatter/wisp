@@ -62,13 +62,6 @@ jobs:
         with:
           version: 'latest'
 
-      - name: Install Rust dependencies
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          toolchain: stable
-          args: --path ./crate/wisp/
-
       # ————————————————————————————————————————————————————————————————————————
 
       - name: Use Node.js 18
