@@ -37,14 +37,6 @@ jobs:
             ~/.rustup/settings.toml
           key: toolchain-${{ hashFiles('rust-toolchain') }}
 
-      - name: Set up Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-
-      # ————————————————————————————————————————————————————————————————————————
-
       - name: Set up Cargo cache
         uses: actions/cache@v3
         with:
@@ -56,6 +48,14 @@ jobs:
             target/            
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
+
+      # ————————————————————————————————————————————————————————————————————————
+
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
 
       - name: Install Wasm-pack
         uses: jetli/wasm-pack-action@v0.4.0
