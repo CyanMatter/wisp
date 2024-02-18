@@ -55,7 +55,7 @@ jobs:
         id: rsw_exists
         uses: andstor/file-existence-action@v3
         with:
-          files: "/home/runner/.cargo/bin/rsw.*"
+          files: "/home/runner/.cargo/bin/rsw*"
 
       - name: Install Rsw
         if: steps.rsw_exists.outputs.files_exists == 'false'
