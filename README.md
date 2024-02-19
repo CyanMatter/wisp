@@ -17,7 +17,7 @@ To build the application, open a command line in the root of the repository, and
 ```
 pnpm build
 ```
-… then run the following to view the application at [localhost:4173](http://localhost:4173/).
+… then run the following to view the application at [localhost:3000](http://localhost:3000/).
 ```
 pnpm preview
 ```
