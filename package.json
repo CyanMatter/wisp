@@ -11,10 +11,11 @@
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
+  "type": "module",
   "scripts": {
     "wasm": "wasm-pack build ./crate/wisp --target web",
-    "dev": "concurrently --prefix \"[{name}]\t\" --names \"rsw,vite\" --prefix-colors \"auto\" \"rsw watch\" \"vite dev --base /web/dist/\"",
+    "dev": "concurrently --prefix \"[{name}]\t\" --names \"rsw,vite\" --prefix-colors \"auto\" \"rsw watch\" \"vite dev --base /web/dist/ --port 3000\"",
     "build": "rsw build && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port 4173"
   }
 }
