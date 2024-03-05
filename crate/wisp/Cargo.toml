@@ -29,7 +29,7 @@ wasm-bindgen = "0.2.84"
 wasm-bindgen-futures = "0.4.41"
 
 [dependencies.web-sys]
-version = "0.3.68"
+version = "0.3.69"
 features = [
   'Document',
   'InputEvent',
