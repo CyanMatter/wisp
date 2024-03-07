@@ -69,36 +69,10 @@ jobs:
           if: steps.trunk_installed.outputs.files_exists == 'false'
           run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.8/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf- -C /home/runner/.cargo/bin
 
-      # ————————————————————————————————————————————————————————————————————————
-
-        - name: 🏗️ Set up PNPM 7
-          uses: pnpm/action-setup@v2.2.2
-          with:
-            version: 7.9.0
-            run_install: false
-
-        - name: 🔍 Get PNPM store directory
-          id: pnpm-cache
-          run: |
-            echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-
-        - name: 🗃️ Set up PNPM cache
-          uses: actions/cache@v3
-          with:
-            path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-            key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-            restore-keys: ${{ runner.os }}-pnpm-store-
-
-        - name: 🏗️ Install Node dependencies
-          run: pnpm install --no-frozen-lockfile
-
         # ————————————————————————————————————————————————————————————————————————
 
         - name: ⚡ Build
           run: /home/runner/.cargo/bin/trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
-
-        - name: 🔩 Minify
-          run: ./node_modules/.bin/esbuild ./dist/**/*.js --bundle --minify --outdir=./dist --allow-overwrite
 
         - name: 🌐 Upload artifact
           uses: actions/upload-pages-artifact@v2
