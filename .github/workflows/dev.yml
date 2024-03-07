@@ -1,117 +1,116 @@
-name: Build
+name: Build, Test
 
 on:
-  push:
-    branches:
-      - '**'
-      - '!main'
-  pull_request:
-    branches:
-      - '**'
+    push:
+        branches:
+        - '**'
+        - '!main'
+    pull_request:
+        branches:
+        - '**'
 
-  workflow_dispatch:
+    workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+    contents: read
+    pages: write
+    id-token: write
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-20.04
+    build:
+        name: ⚡ Build
+        runs-on: ubuntu-20.04
+        
+        steps:
+        - name: ⏬ Checkout repo
+          uses: actions/checkout@v3
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+        # ————————————————————————————————————————————————————————————————————————
 
-      # ————————————————————————————————————————————————————————————————————————
+        - name: 🗃️ Set up Rust Cache
+          uses: actions/cache@v3
+          with:
+            path: |
+                ~/.rustup/toolchains
+                ~/.rustup/update-hashes
+                ~/.rustup/settings.toml
+            key: toolchain-${{ hashFiles('rust-toolchain') }}
 
-      - name: Set up Rust cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.rustup/toolchains
-            ~/.rustup/update-hashes
-            ~/.rustup/settings.toml
-          key: toolchain-${{ hashFiles('rust-toolchain') }}
+        - name: 🗃️ Set up Cargo cache
+          uses: actions/cache@v3
+          with:
+            path: |
+                ~/.cargo/bin/
+                ~/.cargo/registry/index/
+                ~/.cargo/registry/cache/
+                ~/.cargo/git/db/
+                target/            
+            key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            restore-keys: ${{ runner.os }}-cargo-
 
-      - name: Set up Cargo cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/            
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
+        # ————————————————————————————————————————————————————————————————————————
 
-      # ————————————————————————————————————————————————————————————————————————
+        - name: 🏗️ Set up Rust toolchain
+          uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: stable
 
-      - name: Check rsw installation
-        id: rsw_exists
-        uses: andstor/file-existence-action@v3
-        with:
-          files: "/home/runner/.cargo/bin/rsw*"
+        - name: 🎯 Add WASM target
+          run: rustup target add wasm32-unknown-unknown
 
-      - name: Install Rsw
-        if: steps.rsw_exists.outputs.files_exists == 'false'
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: rsw
+        # ————————————————————————————————————————————————————————————————————————
 
-      # ————————————————————————————————————————————————————————————————————————
+        - name: 🔍 Check Trunk installation
+          id: trunk_installed
+          uses: andstor/file-existence-action@v3
+          with:
+            files: "/home/runner/.cargo/bin/trunk*"
+        
+        - name: 🏗️ Download and install Trunk binary
+          if: steps.trunk_installed.outputs.files_exists == 'false'
+          run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.8/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
-      - name: Set up Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+        # ————————————————————————————————————————————————————————————————————————
 
-      # ————————————————————————————————————————————————————————————————————————
+        - name: ⚡ Build
+          run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
-      - name: Install Wasm-pack
-        uses: jetli/wasm-pack-action@v0.4.0
-        with:
-          version: 'latest'
+    # ————————————————————————————————————————————————————————————————————————————
 
-      # ————————————————————————————————————————————————————————————————————————
+    test:
+        name: 🔬 Test
+        needs: build
+        runs-on: ubuntu-20.04
 
-      - name: Use Node.js 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+        steps:
+        - name: ⏬ Checkout repo
+          uses: actions/checkout@v3
+          with:
+            ref: ${{ github.ref }}
 
-      # ————————————————————————————————————————————————————————————————————————
+        # ————————————————————————————————————————————————————————————————————————
 
-      - name: Set up PNPM 7
-        uses: pnpm/action-setup@v2.2.2
-        with:
-          version: 7.9.0
-          run_install: false
+        - name: 🔍 Check wasm-pack installation
+          id: wasm_pack_installed
+          uses: andstor/file-existence-action@v3
+          with:
+            files: "/home/runner/.cargo/bin/wasm-pack*"
 
-      - name: Get PNPM store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+        - name: 🏗️ Download and install wasm-pack binary
+          if: steps.wasm_pack_installed.outputs.files_exists == 'false'
+          run: wget -qO- https://github.com/rustwasm/wasm-pack/releases/download/v0.12.1/wasm-pack-v0.12.1-x86_64-unknown-linux-musl.tar.gz | tar -xzf-
 
-      - name: Set up PNPM cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+        # ————————————————————————————————————————————————————————————————————————
+        
+        - name: 🏗️ Set up and cache Firefox
+          uses: browser-actions/setup-firefox@v1
+          with:
+            firefox-version: '123.0.1'
 
-      - name: Install Node dependencies
-        run: pnpm install --prod --no-frozen-lockfile
+        # ————————————————————————————————————————————————————————————————————————
 
-      # ————————————————————————————————————————————————————————————————————————
-
-      - name: Build app
-        run: pnpm build
+        - name: 🧪 Run tests
+          run: wasm-pack test --headless --firefox

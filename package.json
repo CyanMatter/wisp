@@ -1,21 +1,5 @@
 {
-  "name": "wisp",
-  "version": "0.1.0",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {
-    "vite": "^5.1.3",
-    "vite-plugin-rsw": "^2.0.11",
-    "wisp": "link:crate/wisp/pkg"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
-  "type": "module",
-  "scripts": {
-    "wasm": "wasm-pack build ./crate/wisp --target web",
-    "dev": "concurrently --prefix \"[{name}]\t\" --names \"rsw,vite\" --prefix-colors \"auto\" \"rsw watch\" \"vite dev --base /web/dist/ --port 3000\"",
-    "build": "rsw build && vite build",
-    "preview": "vite preview --port 4173"
-  }
+	"devDependencies": {
+		"esbuild": "0.20.1"
+	}
 }
