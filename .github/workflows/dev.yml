@@ -93,15 +93,10 @@ jobs:
 
         # ————————————————————————————————————————————————————————————————————————
 
-        - name: 🔍 Check wasm-pack installation
-          id: wasm_pack_installed
-          uses: andstor/file-existence-action@v3
+        - name: 🏗️ Set up wasm-pack
+          uses: jetli/wasm-pack-action@v0.4.0
           with:
-            files: "/home/runner/.cargo/bin/wasm-pack*"
-
-        - name: 🏗️ Download and install wasm-pack binary
-          if: steps.wasm_pack_installed.outputs.files_exists == 'false'
-          run: wget -qO- https://github.com/rustwasm/wasm-pack/releases/download/v0.12.1/wasm-pack-v0.12.1-x86_64-unknown-linux-musl.tar.gz | tar -xzf- -C /home/runner/.cargo/bin
+            version: 'latest'
 
         # ————————————————————————————————————————————————————————————————————————
         
@@ -113,4 +108,4 @@ jobs:
         # ————————————————————————————————————————————————————————————————————————
 
         - name: 🧪 Run tests
-          run: /home/runner/.cargo/bin/wasm-pack test --headless --firefox
+          run: wasm-pack test --headless --firefox
