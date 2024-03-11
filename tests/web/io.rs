@@ -1,6 +1,6 @@
 use web_sys::{
-    wasm_bindgen::{closure::Closure, JsCast},
-    Event, HtmlDivElement, HtmlSpanElement, HtmlTextAreaElement,
+    wasm_bindgen::JsCast,
+    HtmlDivElement, HtmlSpanElement, HtmlTextAreaElement,
 };
 
 use super::*;

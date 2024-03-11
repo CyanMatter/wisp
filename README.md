@@ -3,8 +3,8 @@ Welcome to Wisp!
 This project uses Rust and the Leptos framework to build web applications.  While it's still under development ("Here there be dragons"), this guide will help you get started with building and running Wisp.
 
 ## Prerequisites:
-**Rust**: Download and install Rust from the official [website](https://www.rust-lang.org/tools/install). This will also install cargo, the Rust package manager.
-**Trunk**: Install the [Trunk](https://trunkrs.dev/) bundler using cargo:
+- **Rust**: Download and install Rust from the official [website](https://www.rust-lang.org/tools/install). This will also install cargo, the Rust package manager.
+- **Trunk**: Install the [Trunk](https://trunkrs.dev/) bundler using cargo:
 ```
 cargo install trunk
 ```
