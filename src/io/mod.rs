@@ -1,3 +1,5 @@
+mod response;
+
 use futures::stream::{AbortHandle, AbortRegistration, Abortable};
 #[cfg(debug_assertions)]
 use leptos::logging::log;
@@ -34,20 +36,6 @@ where
             placeholder="Type something!"
             on:input=on_input
         ></textarea>
-    }
-}
-
-/// Response component for an output display.
-#[component]
-fn Response(
-    /// String to display. Updates when a new value is assigned to its corresponding WriteSignal.
-    output: ReadSignal<String>,
-) -> impl IntoView {
-    // Render a div with class "response" and display the output signal
-    view! {
-        <div class="response">
-            <span>{output}</span>
-        </div>
     }
 }
 
@@ -92,7 +80,7 @@ pub fn InputOutput() -> impl IntoView {
     // Render the Receptacle and Response components
     view! {
         <Receptacle on_input=on_input/>
-        <Response output=output/>
+        <response::ResponseList output=output/>
     }
 }
 
