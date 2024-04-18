@@ -973,18 +973,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "leptos_tutorial"
-version = "0.1.0"
-dependencies = [
- "async-std",
- "console_error_panic_hook",
- "futures",
- "leptos",
- "wasm-bindgen-test",
- "web-sys",
-]
-
-[[package]]
 name = "libc"
 version = "0.2.153"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2093,6 +2081,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dffa400e67ed5a4dd237983829e66475f0a4a26938c4b04c21baede6262215b8"
 dependencies = [
  "memchr",
+]
+
+[[package]]
+name = "wisp"
+version = "0.1.0"
+dependencies = [
+ "async-std",
+ "console_error_panic_hook",
+ "futures",
+ "leptos",
+ "wasm-bindgen-test",
+ "web-sys",
 ]
 
 [[package]]

@@ -1,5 +1,5 @@
 use leptos::mount_to_body;
-use leptos_tutorial::App;
+use wisp::App;
 
 fn main() {
     #[cfg(feature = "console_error_panic_hook")]

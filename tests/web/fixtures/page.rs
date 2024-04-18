@@ -1,5 +1,5 @@
 use leptos::*;
-use leptos_tutorial::io::InputOutput;
+use wisp::io::InputOutput;
 
 use crate::remove;
 
