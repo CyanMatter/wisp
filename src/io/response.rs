@@ -27,7 +27,7 @@ pub fn ResponseList(output: ReadSignal<String>) -> impl IntoView {
 #[component]
 fn Target(output: ReadSignal<String>, set_cards: WriteSignal<cards::CardList>) -> impl IntoView {
     view! {
-        <div class="target">
+        <div id="target" class="response">
             <span>{output}</span>
 
             // A button that, when pressed, adds a new card to the top of the responses with the current response string

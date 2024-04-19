@@ -3,6 +3,7 @@ use wasm_bindgen::JsCast;
 use web_sys::{Element, HtmlDivElement, HtmlTextAreaElement};
 
 const ID_RECEPTACLE: &str = "receptacle";
+const ID_TARGET: &str = "target";
 const SELECTOR_RESPONSES: &str = "div.response";
 
 pub fn by_id(id: &str) -> Option<Element> {
@@ -28,12 +29,11 @@ pub fn responses() -> Vec<HtmlDivElement> {
         .collect()
 }
 
-pub fn target() -> HtmlDivElement {
-    leptos::document()
-        .query_selector(SELECTOR_RESPONSES)
-        .unwrap()
-        .expect("no response field was found")
-        .unchecked_into::<HtmlDivElement>()
+pub fn target() -> Option<HtmlDivElement> {
+    if let Some(target) = by_id(ID_TARGET) {
+        return Some(target.unchecked_into::<HtmlDivElement>());
+    }
+    None
 }
 
 pub fn receptacle() -> Option<HtmlTextAreaElement> {

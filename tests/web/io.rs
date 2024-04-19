@@ -66,14 +66,22 @@ fn target_initializes_singularly() {
     let responses = get::responses();
     assert_eq!(responses.len(), 1);
 
-    let target = get::target();
-    assert_eq!(*responses.first().unwrap(), target);
+    if let Some(target) = get::target() {
+        assert_eq!(*responses.first().unwrap(), target);
+    } else {
+        panic!("Couldn't find \"target\" element");
+    }
+    
 }
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
 fn target_initializes_empty() {
     page::setup_io();
 
-    let target = Response::from_html(get::target());
-    assert_eq!(target.content, "");
+    if let Some(target_div) = get::target() {
+        let target_res = Response::from_html(target_div);
+        assert_eq!(target_res.content, "");
+    } else {
+        panic!("Couldn't find \"target\" element");
+    }
 }
