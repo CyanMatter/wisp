@@ -1,3 +1,5 @@
+mod clipboard;
+
 use leptos::*;
 
 #[component]
@@ -28,15 +30,17 @@ fn Target(output: ReadSignal<String>, set_cards: WriteSignal<cards::CardList>) -
         <div class="target">
             <span>{output}</span>
 
-            // A button that, when clicked, adds a new card to the top of the responses with the current response string
+            // A button that, when pressed, adds a new card to the top of the responses with the current response string
             <button on:click=move |_| {
                 set_cards
                     .update(move |cards| {
-                        cards.add_card(output.get());
+                        cards.add_card(output.get_untracked());
                     });
             }>
                 "Pin"
             </button>
+
+            <clipboard::CopyButton text=output.get_untracked()/>
         </div>
     }
 }
@@ -48,7 +52,7 @@ fn CardElement(card: cards::Card, set_cards: WriteSignal<cards::CardList>) -> im
     view! {
         <li>
             <div class="response">
-                <span>{id} {card.response}</span>
+                <span>{id} {card.response()}</span>
 
                 // A button that, when clicked, removes this card from the list
                 <button on:click=move |_| {
@@ -59,15 +63,15 @@ fn CardElement(card: cards::Card, set_cards: WriteSignal<cards::CardList>) -> im
                 }>
                     "Unpin"
                 </button>
+
+                <clipboard::CopyButton text=card.response()/>
             </div>
         </li>
     }
 }
 
 mod cards {
-    
-    #[derive(Clone, PartialEq, Eq)]
-    pub struct CardList {
+    #[derive(Clone, PartialEq, Eq)]    pub struct CardList {
         id_gen: Generator,
         cards: Vec<Card>,
     }
@@ -101,12 +105,16 @@ mod cards {
     #[derive(Clone, PartialEq, Eq)]
     pub struct Card {
         id: usize,
-        pub response: String,
+        response: String,
     }
 
     impl Card {
         pub fn id(&self) -> usize {
             self.id
+        }
+
+        pub fn response(&self) -> String {
+            self.response.clone()
         }
     }
 
