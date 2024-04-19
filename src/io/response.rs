@@ -14,7 +14,7 @@ pub fn ResponseList(output: ReadSignal<String>) -> impl IntoView {
                     each=move || cards.get().iter()
                     key=|card| card.id()
                     children=move |card: cards::Card| {
-                        view! { <CardElement card=card.clone()/> }
+                        view! { <CardElement card=card set_cards=set_cards/> }
                     }
                 />
             </ul>
@@ -34,17 +34,31 @@ fn Target(output: ReadSignal<String>, set_cards: WriteSignal<cards::CardList>) -
                     .update(move |cards| {
                         cards.add_card(output.get());
                     });
-            }></button>
+            }>
+                "Pin"
+            </button>
         </div>
     }
 }
 
 #[component]
-fn CardElement(card: cards::Card) -> impl IntoView {
+fn CardElement(card: cards::Card, set_cards: WriteSignal<cards::CardList>) -> impl IntoView {
+    let id = card.id();
+
     view! {
         <li>
             <div class="response">
-                <span>{card.id()} {card.response}</span>
+                <span>{id} {card.response}</span>
+
+                // A button that, when clicked, removes this card from the list
+                <button on:click=move |_| {
+                    set_cards
+                        .update(move |cards| {
+                            cards.remove_card_with_id(id);
+                        });
+                }>
+                    "Unpin"
+                </button>
             </div>
         </li>
     }
@@ -68,7 +82,7 @@ mod cards {
 
         pub fn add_card(&mut self, response: String) {
             self.cards.push(Card {
-                id: self.id_gen.next().expect("No unique identifiers available for the cards"),
+                id: self.id_gen.next().expect("Ran out of unique identifiers for a new card"),
                 response,
             });
         }
