@@ -20,10 +20,10 @@ pub fn CopyButton(text: String) -> impl IntoView {
 
 fn copy_to_clipboard(text: String) {
     spawn_local(async move {
-        let nav = window().navigator().clipboard();
-        match nav {
-            Some(a) => {
-                let _ = a.write_text(&text);
+        let cb_option = window().navigator().clipboard();
+        match cb_option {
+            Some(cb) => {
+                let _ = cb.write_text(&text);
             }
             None => {
                 warn!("Failed to access clipboard");
