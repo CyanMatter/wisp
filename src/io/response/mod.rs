@@ -17,7 +17,7 @@ pub fn ResponseList(output: ReadSignal<String>) -> impl IntoView {
                     each=move || cards.get().iter()
                     key=|card| card.id()
                     children=move |card: card::Card| {
-                        view! { <CardElement card=card set_cards=set_cards/> }
+                        view! { <PinnedCard card=card set_cards=set_cards/> }
                     }
                 />
             </ul>
@@ -41,20 +41,22 @@ fn Target(output: ReadSignal<String>, set_cards: WriteSignal<card::CardList>) ->
                 "Pin"
             </button>
 
-            <clipboard::CopyButton text=output.get_untracked()/>
+            // A button that copies the response to the clipboard
+            <clipboard::CopyResponseFromSignal text=output/>
+
+            // A button that copies a shareable url to the clipboard
+            <clipboard::CopyShareableURLFromSignal text=output/>
         </div>
     }
 }
 
 #[component]
-fn CardElement(card: card::Card, set_cards: WriteSignal<card::CardList>) -> impl IntoView {
+fn PinnedCard(card: card::Card, set_cards: WriteSignal<card::CardList>) -> impl IntoView {
     let id = card.id();
 
     view! {
-        <li>
-            <div class="response">
-                <span>{id} {card.response()}</span>
-
+        <li id=format!("pinned-card-{id}") class="response">
+            <div class="functions">
                 // A button that, when clicked, removes this card from the list
                 <button on:click=move |_| {
                     set_cards
@@ -65,7 +67,24 @@ fn CardElement(card: card::Card, set_cards: WriteSignal<card::CardList>) -> impl
                     "Unpin"
                 </button>
 
-                <clipboard::CopyButton text=card.response()/>
+                // A button that copies the response to the clipboard
+                <clipboard::CopyResponse text=card.response()/>
+
+                // A button that copies a shareable url to the clipboard
+                <clipboard::CopyShareableURL text=card.response()/>              
+            </div>
+            <div>
+                // A division for the message with the invisible payload
+                <span class="message">
+                    { card.response() }
+                </span>
+
+                <hr/>
+
+                // A division for the message's visible projection
+                <span class="projection">
+                    "TODO: message's visible projection"
+                </span>
             </div>
         </li>
     }

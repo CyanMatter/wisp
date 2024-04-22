@@ -1,19 +1,47 @@
 use leptos::{
-    component,
-    logging::warn,
-    IntoView,
-    spawn_local,
-    view,
-    window
+    component, logging::warn, spawn_local, view, window, IntoView, ReadSignal, SignalGetUntracked
 };
 
 #[component]
-pub fn CopyButton(text: String) -> impl IntoView {
+pub fn CopyResponseFromSignal(text: ReadSignal<String>) -> impl IntoView {
     view! {
-        <button on:click=move |_| {
+        <button class="button-copy-response" on:click=move |_| {
+            copy_to_clipboard(text.get_untracked());
+        }>
+            "Copy"
+        </button>
+    }
+}
+
+#[component]
+pub fn CopyResponse(text: String) -> impl IntoView {
+    view! {
+        <button class="button-copy-response" on:click=move |_| {
             copy_to_clipboard(text.clone());
         }>
             "Copy"
+        </button>
+    }
+}
+
+#[component]
+pub fn CopyShareableURLFromSignal(text: ReadSignal<String>) -> impl IntoView {
+    view! {
+        <button class="button-copy-shareable-url" on:click=move |_| {
+            copy_to_clipboard(format!("TODO: Make shareable url. Response string: {}", text.get_untracked()));
+        }>
+            "Share"
+        </button>
+    }
+}
+
+#[component]
+pub fn CopyShareableURL(text: String) -> impl IntoView {
+    view! {
+        <button class="button-copy-shareable-url" on:click=move |_| {
+            copy_to_clipboard(format!("TODO: Make shareable url. Response string: {text}"));
+        }>
+            "Share"
         </button>
     }
 }

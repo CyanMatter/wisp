@@ -85,7 +85,7 @@ pub fn InputOutput() -> impl IntoView {
 }
 
 // Simulate an expensive task that takes some time
-async fn some_expensive_task(iev: InputEvent) -> Option<String> {
+async fn some_expensive_task(msg: String) -> Option<String> {
     const N: u32 = 3;
     #[cfg(debug_assertions)]
     log!("====== counting to {N} =======");
@@ -99,18 +99,25 @@ async fn some_expensive_task(iev: InputEvent) -> Option<String> {
     log!("before sleep i is {N}\n========= all done! =========");
 
     // Return a formatted string with input type and reversed target value
-    Some(format!(
-        "{}\t{}",
-        iev.input_type(),
-        reverse(event_target_value(&iev))
-    ))
+    Some(msg)
+}
+
+// Simulate an easy task
+async fn some_easy_task(msg: String) -> Option<String> {
+    Some(msg)
 }
 
 // Run the expensive task with abort handling
 async fn run_abortable(reg: AbortRegistration, iev: InputEvent, set_output: WriteSignal<String>) {
     // Wrap the expensive task "some_expensive_task" with abort functionality
     // using the provided registration handle "reg" to allow cancellation.
-    let fut = Abortable::new(some_expensive_task(iev), reg);
+    let msg = format!(
+        "{}\t{}",
+        iev.input_type(),
+        reverse(event_target_value(&iev))
+    );
+    let fut = Abortable::new(some_easy_task(msg), reg);
+    // let fut = Abortable::new(some_expensive_task(msg), reg);
 
     // Await the completion of the wrapped task.
     // In case of an abortion (`Err(_aborted)`), handle it with a closure:
