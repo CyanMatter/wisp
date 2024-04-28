@@ -1,6 +1,7 @@
 # wisp
 /target/
 /dist/
+bundled.scss
 
 #! VSCode
 /.vscode/

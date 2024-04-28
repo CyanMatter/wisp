@@ -71,6 +71,9 @@ jobs:
 
         # ————————————————————————————————————————————————————————————————————————
 
+        - name: 🍱 Bundle CSS
+          run: stylance ./src
+
         - name: ⚡ Build
           run: /home/runner/.cargo/bin/trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
