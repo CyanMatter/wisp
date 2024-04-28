@@ -71,8 +71,20 @@ jobs:
 
         # ————————————————————————————————————————————————————————————————————————
 
+        - name: 🔍 Check Stylance installation
+          id: stylance_installed
+          uses: andstor/file-existence-action@v3
+          with:
+            files: "/home/runner/.cargo/bin/stylance*"
+
+        - name: 🏗️ Download and install Stylance binary
+          if: steps.stylance_installed.outputs.files_exists == 'false'
+          run: cargo install stylance-cli
+
+        # ————————————————————————————————————————————————————————————————————————
+
         - name: 🍱 Bundle CSS
-          run: stylance ./src
+          run: stylance .
 
         - name: ⚡ Build
           run: /home/runner/.cargo/bin/trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
